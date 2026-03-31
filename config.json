@@ -1,0 +1,48 @@
+{
+  "skill_name": "trendradar-mcp",
+  "version": "1.0.0",
+  "description": "新闻热点聚合与 AI 分析工具（MCP Server）",
+  "author": "sansan0 (OpenClaw Integration)",
+  "integration_date": "2026-03-30",
+  "mcp_server": {
+    "name": "trendradar-news",
+    "status": "running",
+    "pid": 21583,
+    "transport": "stdio",
+    "fastmcp_version": "2.12.5"
+  },
+  "tools": [
+    "resolve_date_range",
+    "get_latest_news",
+    "search_news",
+    "analyze_sentiment",
+    "compare_periods",
+    "read_articles_batch",
+    "config_mgmt",
+    "analytics",
+    "system"
+  ],
+  "data_sources": [
+    "zhihu",
+    "weibo",
+    "wechat",
+    "36kr",
+    "huxiu",
+    "tmtpost"
+  ],
+  "usage_examples": {
+    "ai_hot_topics_this_week": [
+      "mcporter call trendradar.resolve_date_range expression:\"本周\"",
+      "mcporter call trendradar.get_latest_news limit:30 include_url:true",
+      "mcporter call trendradar.search_news query:\"AI\" top_n:50"
+    ],
+    "sentiment_analysis": [
+      "mcporter call trendradan.resolve_date_range expression:\"最近 7 天\"",
+      "mcporter call trendradar.analyze_sentiment topic:\"AI\" date_range:{...}"
+    ]
+  },
+  "maintenance": {
+    "log_path": "/tmp/trendradar-mcp.log",
+    "restart_command": "cd ~/.openclaw/workspace/skills/trendradar-mcp && PYTHONPATH=$(pwd) python3 -m mcp_server.server --transport stdio &"
+  }
+}
