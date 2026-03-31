@@ -215,36 +215,351 @@ ai_filter:
 3. 分数低于阈值的新闻不推送
 4. AI 筛选失败时自动回退到关键词匹配
 
-#### 4. 多渠道配置
+#### 4. AI 配置 - 云端 vs 本地模型
+
+TrendRadar 支持两种 AI 分析模式：**云端 API**（如 DeepSeek、OpenAI）和 **本地部署**（如 Ollama、LM Studio）。根据你的网络环境、隐私需求和硬件条件选择。
+
+---
+
+### 🌐 方案一：云端 API（推荐新手）
+
+**适用场景：**
+- ✅ 没有高性能 GPU
+- ✅ 希望快速上手，零配置
+- ✅ 愿意付费使用高质量模型
+
+**支持的服务商：**
+
+| 服务商 | 优势 | 价格参考 | Model ID 格式 |
+|-------|------|---------|--------------|
+| **DeepSeek** | 性价比高，中文理解好 | ¥1-2/百万 token | `deepseek/deepseek-chat` |
+| **OpenAI** | GPT-4o 系列，综合能力最强 | $3-15/百万 token | `openai/gpt-4o` |
+| **Google Gemini** | 免费额度高，长上下文 | 免费 tier 可用 | `gemini/gemini-1.5-flash` |
+| **Anthropic Claude** | 推理能力强，适合复杂分析 | $3-7.5/百万 token | `anthropic/claude-3-haiku` |
+
+**配置示例：**
 
 ```yaml
-notification:
-  channels:
-    telegram:
-      enabled: true
-      bot_token: "YOUR_TOKEN"
-      chat_id: "YOUR_CHAT_ID"
-      
-    dingtalk:
-      enabled: true
-      webhook_url: "https://oapi.dingtalk.com/robot/send?access_token=..."
-      
-    email:
-      enabled: false  # 默认关闭，需要时启用
-      smtp_server: "smtp.qq.com"
-      smtp_port: 465
-      from_email: "your@qq.com"
-      password: "授权码"
-      to_emails: ["you@example.com"]
+# config.yaml
+ai:
+  enabled: true
+  provider: "deepseek"
+  api_key: "sk-your-api-key-here"
+  model: "deepseek/deepseek-chat"
+  base_url: null  # 云端 API 不需要设置
 ```
 
-**多账号配置（支持分号分隔）：**
+**环境变量方式（推荐）：**
+
+```bash
+# GitHub Secrets / .env
+AI_API_KEY=sk-your-api-key-here
+AI_PROVIDER=deepseek
+AI_MODEL=deepseek/deepseek-chat
+```
+
+---
+
+### 🖥️ 方案二：本地部署（隐私优先/免费）
+
+**适用场景：**
+- ✅ 有高性能 GPU（建议≥8GB VRAM）
+- ✅ 注重数据隐私，不希望上传到云端
+- ✅ 希望零成本使用 AI 功能
+- ✅ 愿意花时间配置环境
+
+#### **2.1 Ollama（推荐，最简单）**
+
+**特点：**
+- 🚀 一键安装，开箱即用
+- 📦 内置模型管理工具
+- 🔧 自动处理 API 格式兼容
+- 💰 完全免费
+
+**安装步骤：**
+
+```bash
+# macOS (Homebrew)
+brew install ollama
+
+# Linux
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Windows
+# 下载官网安装包：https://ollama.com/download
+```
+
+**拉取模型示例：**
+
+```bash
+# Qwen2.5（中文理解优秀，推荐）
+ollama pull qwen2.5:7b
+
+# Llama3（英文能力强）
+ollama pull llama3
+
+# Mistral（轻量级，速度快）
+ollama pull mistral
+
+# 查看已安装模型
+ollama list
+
+# 启动服务（默认端口 11434）
+ollama serve
+```
+
+**TrendRadar 配置：**
 
 ```yaml
-telegram:
-  bot_token: "TOKEN1;TOKEN2"
-  chat_id: "CHAT_ID_1;CHAT_ID_2"
+# config.yaml
+ai:
+  enabled: true
+  provider: "ollama"
+  api_key: ""  # Ollama 不需要 API Key，留空即可
+  model: "qwen2.5:7b"  # 替换为你拉取的模型名称
+  base_url: "http://127.0.0.1:11434/v1"  # Ollama 的兼容 API 地址
 ```
+
+**环境变量方式：**
+
+```bash
+AI_PROVIDER=ollama
+AI_MODEL=qwen2.5:7b
+AI_API_BASE=http://127.0.0.1:11434/v1
+# AI_API_KEY 留空或不设置
+```
+
+#### **2.2 LM Studio（图形界面，适合调试）**
+
+**特点：**
+- 🖱️ 可视化模型管理界面
+- 🔍 内置模型搜索和下载
+- 🧪 提供本地 API Server
+- 💻 跨平台支持
+
+**安装步骤：**
+
+1. **下载安装：** https://lmstudio.ai/
+2. **搜索并下载模型：**
+   - 在 LM Studio 中搜索 `qwen2.5`、`llama3` 等
+   - 选择适合你 GPU 显存的版本（7B-14B 推荐）
+3. **启动本地 API Server：**
+   - 进入左侧"🔌 Local Server"标签页
+   - 选择已下载的模型
+   - 点击"Start Server"（默认端口 1234）
+
+**TrendRadar 配置：**
+
+```yaml
+# config.yaml
+ai:
+  enabled: true
+  provider: "ollama"  # LM Studio 兼容 OpenAI API，用 ollama provider
+  api_key: "sk-"  # LM Studio 接受任意虚拟 key
+  model: "qwen2.5:7b"  # 替换为你下载的模型名称
+  base_url: "http://192.168.61.1:1234/v1"  # LM Studio 的 API 地址（注意 IP）
+```
+
+**环境变量方式：**
+
+```bash
+# 假设你的电脑 IP 是 192.168.61.1
+AI_PROVIDER=ollama
+AI_MODEL=qwen2.5:7b
+AI_API_KEY=sk-
+AI_API_BASE=http://192.168.61.1:1234/v1
+```
+
+> 💡 **注意：** LM Studio 的 API 地址中的 IP 需要替换为你实际电脑的局域网 IP，可以通过 `ipconfig`（Windows）或 `ifconfig`（macOS/Linux）查看。
+
+#### **2.3 vLLM（高性能推理）**
+
+**适用场景：**
+- ✅ 多用户并发访问
+- ✅ 需要高吞吐量
+- ✅ GPU 显存≥16GB
+
+**安装与启动：**
+
+```bash
+# 安装 vLLM
+pip install vllm
+
+# 启动服务
+python -m vllm.entrypoints.api_server \
+  --model qwen2.5:7b \
+  --port 8000 \
+  --host 0.0.0.0
+```
+
+**TrendRadar 配置：**
+
+```yaml
+ai:
+  enabled: true
+  provider: "ollama"  # vLLM 兼容 OpenAI API
+  api_key: "sk-"
+  model: "qwen2.5:7b"
+  base_url: "http://127.0.0.1:8000/v1"
+```
+
+#### **本地模型配置对比表**
+
+| 方案 | 安装难度 | GPU 要求 | 速度 | 推荐场景 |
+|------|---------|---------|------|---------|
+| **Ollama** | ⭐ 简单 | ≥4GB VRAM | 快 | 个人使用，首选推荐 |
+| **LM Studio** | ⭐⭐ 中等 | ≥6GB VRAM | 中 | 需要图形界面调试 |
+| **vLLM** | ⭐⭐⭐ 复杂 | ≥16GB VRAM | 极快 | 高并发生产环境 |
+
+---
+
+### 🔄 方案三：混合模式（灵活切换）
+
+**配置多个 AI 提供商，根据需求自动选择：**
+
+```yaml
+ai:
+  enabled: true
+  
+  # 默认使用云端 API
+  provider: "deepseek"
+  api_key: "sk-your-key"
+  model: "deepseek/deepseek-chat"
+  
+  # 备用本地模型（当云端失败时自动切换）
+  fallback_provider: "ollama"
+  fallback_model: "qwen2.5:7b"
+  fallback_base_url: "http://127.0.0.1:11434/v1"
+```
+
+**工作原理：**
+1. 优先尝试云端 API（速度快，质量高）
+2. 如果云端失败（网络问题/配额耗尽），自动切换到本地模型
+3. 本地模型作为兜底方案，保证服务可用性
+
+---
+
+### ⚙️ 通用配置参数
+
+无论使用哪种 AI 提供商，以下参数都适用：
+
+```yaml
+ai:
+  enabled: true
+  
+  # 基础配置（必填）
+  provider: "deepseek"  # ollama / deepseek / openai / gemini / anthropic
+  api_key: "sk-xxx"     # 云端 API 需要，本地模型可留空或填任意值
+  model: "qwen2.5:7b"   # 模型名称/ID
+  
+  # 高级配置（可选）
+  base_url: null        # 自定义 API 地址（本地模型必填）
+  temperature: 0.7      # 采样温度（0-2，越高越随机）
+  max_tokens: 5000      # 最大生成 token 数
+  timeout: 120          # 请求超时时间（秒）
+  num_retries: 2        # 失败重试次数
+  
+  # AI 分析开关
+  analysis_enabled: true
+  translation_enabled: false  # 是否启用翻译功能
+```
+
+**参数说明：**
+
+| 参数 | 默认值 | 说明 |
+|------|-------|------|
+| `temperature` | `1.0` | 控制生成随机性，越低越确定（推荐 0.7-1.0） |
+| `max_tokens` | `5000` | AI 回答的最大长度，分析任务建议≥3000 |
+| `timeout` | `120` | 超时时间，本地模型较慢可适当调高 |
+| `num_retries` | `2` | 失败自动重试次数，提高稳定性 |
+
+---
+
+### 🚀 快速配置指南
+
+#### **新手推荐路径：**
+
+```bash
+# 步骤 1：安装 Ollama
+brew install ollama  # macOS
+curl -fsSL https://ollama.com/install.sh | sh  # Linux
+
+# 步骤 2：拉取模型（中文理解优秀）
+ollama pull qwen2.5:7b
+
+# 步骤 3：启动服务
+ollama serve
+
+# 步骤 4：配置 TrendRadar
+# config.yaml
+ai:
+  enabled: true
+  provider: "ollama"
+  api_key: ""
+  model: "qwen2.5:7b"
+  base_url: "http://127.0.0.1:11434/v1"
+
+# 步骤 5：测试连接
+python -c "from trendradar.ai.client import AIClient; print(AIClient().test_connection())"
+```
+
+#### **云端快速路径：**
+
+```bash
+# 只需配置 API Key，其他自动处理
+AI_API_KEY=sk-your-key-here
+AI_PROVIDER=deepseek
+AI_MODEL=deepseek/deepseek-chat
+```
+
+---
+
+### 🐛 本地模型常见问题
+
+**Q1: Ollama 服务启动失败？**
+
+```bash
+# 检查端口是否被占用
+lsof -i :11434  # macOS/Linux
+netstat -ano | findstr :11434  # Windows
+
+# 查看 Ollama 日志
+ollama serve --debug
+```
+
+**Q2: LM Studio API 无法连接？**
+
+- ✅ 确认已启动"Local Server"（不是只下载模型）
+- ✅ 检查 IP 地址是否正确（用 `ipconfig` 或 `ifconfig` 查看）
+- ✅ 防火墙允许 LM Studio 访问网络
+
+**Q3: 本地模型推理速度慢？**
+
+- 降低 `max_tokens` 限制输出长度
+- 使用量化版本模型（如 `qwen2.5:1.5b`、`qwen2.5:3b`）
+- 关闭其他占用 GPU 的程序
+
+**Q4: AI 分析推送不生效？**
+
+```bash
+# 检查配置是否正确
+docker exec -it trendradar python manage.py config | grep ai
+
+# 手动测试 API 连接
+curl http://127.0.0.1:11434/api/chat  # Ollama
+curl http://192.168.61.1:1234/v1/models  # LM Studio
+```
+
+**Q5：如何选择合适的模型？**
+
+| GPU 显存 | 推荐模型 | 速度 | 质量 |
+|---------|---------|------|------|
+| **≥24GB** | qwen2.5:72b / llama3:70b | 中 | ⭐⭐⭐⭐⭐ |
+| **16-24GB** | qwen2.5:32b / llama3:8b | 快 | ⭐⭐⭐⭐ |
+| **8-16GB** | qwen2.5:7b / mistral:7b | 很快 | ⭐⭐⭐ |
+| **4-8GB** | qwen2.5:1.5b / phi3:mini | 极快 | ⭐⭐ |
+
+> 💡 **提示：** Qwen2.5 系列对中文支持最好，Llama3 英文能力强，Mistral 轻量级适合低配设备。
 
 ### 关键词过滤语法（frequency_words.txt）
 
