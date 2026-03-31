@@ -1,5 +1,14 @@
 <div align="center" id="trendradar">
 
+<!-- Attribution to original project -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h3>📌 项目来源说明</h3>
+  <p><strong>TrendRadar MCP Server</strong> 是基于开源项目 <a href="https://github.com/sansan0/TrendRadar" target="_blank"><strong>sansan0/TrendRadar</strong></a> 的 MCP (Model Context Protocol) 服务器版本。</p>
+  <p>原项目由 <a href="https://github.com/sansan0" target="_blank">@sansan0</a> 开发，是一个功能强大的热点资讯聚合工具。本仓库在此基础上增加了 MCP 协议支持，使 AI 助手能够直接访问 TrendRadar 的数据分析和查询能力。</p>
+  <p style="margin-top: 10px;"><strong>原项目地址：</strong><a href="https://github.com/sansan0/TrendRadar" target="_blank">https://github.com/sansan0/TrendRadar</a></p>
+  <p style="margin-bottom: 0;"><strong>许可证：</strong>本项目继承原项目的 GPL-3.0 许可证</p>
+</div>
+
 <a href="https://github.com/sansan0/TrendRadar" title="TrendRadar">
   <img src="/_image/banner.webp" alt="TrendRadar Banner" width="80%">
 </a>
