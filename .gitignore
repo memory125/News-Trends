@@ -1,0 +1,55 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env.local
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Output directories
+output/
+data/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Database files (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# MCP Server cache
+mcp_server/__pycache__/
+mcp_server/services/__pycache__/
+mcp_server/tools/__pycache__/
+mcp_server/utils/__pycache__/
