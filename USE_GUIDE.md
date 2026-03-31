@@ -357,20 +357,19 @@ ai:
   provider: "ollama"  # LM Studio 兼容 OpenAI API，用 ollama provider
   api_key: "sk-"  # LM Studio 接受任意虚拟 key
   model: "qwen2.5:7b"  # 替换为你下载的模型名称
-  base_url: "http://192.168.61.1:1234/v1"  # LM Studio 的 API 地址（注意 IP）
+  base_url: "http://127.0.0.1:1234/v1"  # LM Studio 的 API 地址（本地回环）
 ```
 
 **环境变量方式：**
 
 ```bash
-# 假设你的电脑 IP 是 192.168.61.1
 AI_PROVIDER=ollama
 AI_MODEL=qwen2.5:7b
 AI_API_KEY=sk-
-AI_API_BASE=http://192.168.61.1:1234/v1
+AI_API_BASE=http://127.0.0.1:1234/v1
 ```
 
-> 💡 **注意：** LM Studio 的 API 地址中的 IP 需要替换为你实际电脑的局域网 IP，可以通过 `ipconfig`（Windows）或 `ifconfig`（macOS/Linux）查看。
+> 💡 **说明：** LM Studio 默认监听本地回环地址 `127.0.0.1`，使用此配置即可。如果需要在其他设备上访问，请修改 LM Studio Server 设置中的绑定地址。
 
 #### **2.3 vLLM（高性能推理）**
 
