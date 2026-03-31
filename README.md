@@ -988,6 +988,76 @@ frequency_words.txt 文件增加了一个【必须词】功能，使用 + 号
 
 > 💡 RSS 使用与热榜相同的 `frequency_words.txt` 进行关键词过滤
 
+#### 🌐 国际新闻数据源特点（海外资讯推荐）
+
+TrendRadar 支持配置全球主流媒体的 RSS 订阅源，让你突破信息茧房，获取多元视角：
+
+**📰 推荐国际 RSS 源列表：**
+
+| 类别 | RSS 源名称 | URL | 特点说明 |
+|------|-----------|-----|---------|
+| **科技媒体** | Hacker News | https://news.ycombinator.com/rss | 硅谷技术社区，高质量讨论，创业/编程/AI前沿 |
+| | TechCrunch | https://techcrunch.com/feed/ | 美国科技创业新闻，融资/产品发布/行业动态 |
+| | The Verge | https://www.theverge.com/rss/index.xml | 科技文化综合媒体，深度评测/趋势分析 |
+| | Ars Technica | https://arstechnica.com/feed/ | 技术深度报道，科学/政策/安全领域权威 |
+| **新闻媒体** | BBC News (World) | http://feeds.bbci.co.uk/news/world/rss.xml | 英国公共媒体，全球视角，多语言支持 |
+| | Reuters World | https://www.reutersagency.com/feed/ | 国际通讯社，财经/政治/突发事件快讯 |
+| | AP News | https://apnews.com/rss/ap/topstories | 美联社新闻，客观中立，全球覆盖 |
+| **财经资讯** | Bloomberg Tech | https://www.bloomberg.com/technology/rss/podcasts/feed.xml | 彭博社科技频道，金融市场/科技产业深度分析 |
+| | Financial Times | https://www.ft.com/rss/home | 英国金融时报，全球经济/商业政策权威报道 |
+| | Wall Street Journal | https://feeds.a.dj.com/rss/RSSWorldNews.xml | 华尔街日报，美国视角的全球财经新闻 |
+| **开源社区** | GitHub Trending | https://github.com/trending.rss | GitHub 热门项目趋势，开发者生态风向标 |
+| | Reddit r/technology | https://www.reddit.com/r/technology/.rss | Reddit 科技板块，用户讨论/热点话题 |
+
+> 💡 **RSS 源参考合集**：
+> - [awesome-tech-rss](https://github.com/tuan3w/awesome-tech-rss) - 科技、创业、编程领域博客和媒体 RSS 合集
+> - [awesome-rss-feeds](https://github.com/plenaryapp/awesome-rss-feeds) - 世界各国主流新闻媒体 RSS 合集
+
+**🌍 国际新闻数据源特点：**
+
+| 特点 | 说明 | 使用建议 |
+|------|------|---------|
+| **多元视角** | 获取不同国家/地区的报道角度，避免单一信息源偏见 | 对比同一事件在不同媒体的报道差异 |
+| **深度内容** | 海外媒体通常有更长的分析文章和背景解读 | 适合需要深入了解的复杂议题 |
+| **时效性强** | 国际通讯社（Reuters/AP）提供实时快讯 | 关注突发事件的国际反应 |
+| **专业领域** | 垂直媒体（如 Hacker News、TechCrunch）在特定领域深度领先 | 按兴趣订阅对应领域的 RSS 源 |
+| **语言障碍** | 大部分为英文内容，需要翻译支持 | 配合 AI 翻译功能使用 |
+
+**⚠️ 注意事项：**
+
+1. **语言适配**：海外媒体多为英文，建议开启 AI 翻译功能（`ai_translation.enabled: true`）
+2. **内容过滤**：国际新闻可能涉及敏感话题，AI 模型可能拒绝翻译，建议根据实际需求筛选订阅源
+3. **时效差异**：注意时区差异，部分 RSS 源的更新时间可能与国内平台不同
+4. **访问限制**：部分海外网站可能需要网络代理才能正常抓取
+
+**配置示例：**
+
+```yaml
+rss:
+  enabled: true
+  freshness_days: 7  # 全局默认新鲜度过滤
+  
+  feeds:
+    - name: "Hacker News"
+      url: "https://news.ycombinator.com/rss"
+      freshness_days: 3  # 单源独立设置，只抓取 3 天内的文章
+      
+    - name: "TechCrunch"
+      url: "https://techcrunch.com/feed/"
+      
+    - name: "BBC World News"
+      url: "http://feeds.bbci.co.uk/news/world/rss.xml"
+```
+
+**关键词过滤技巧：**
+
+国际新闻的关键词配置建议：
+- 使用英文关键词匹配（如 `AI`、`Tesla`、`Bitcoin`）
+- 配合 AI 翻译功能，将英文内容翻译成中文推送
+- 对于复杂主题，可以使用正则表达式精确匹配
+
+> 💡 **提示**：RSS 订阅源与热榜平台共享同一套关键词过滤系统，配置一次即可同时监控国内外资讯。
+
 ### **可视化配置编辑器**
 
 提供基于 Web 的图形化配置界面，无需手动编辑 YAML 文件，通过表单即可完成所有配置项的修改与导出。
